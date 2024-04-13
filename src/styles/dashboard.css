@@ -1,0 +1,105 @@
+* {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: 200ms;
+}
+
+.dashboard {
+  background-color: #F9F7F7;
+}
+.dashboard main {
+  width: 100%;
+  height: calc(100vh - 80px);
+  position: relative;
+  display: flex;
+}
+.dashboard main .results {
+  height: 100%;
+  width: 30%;
+}
+.dashboard main .results .searchContainer {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.dashboard main .results .searchContainer .searchBar {
+  width: 90%;
+  margin: auto;
+  border-radius: 10px;
+  border: 1px solid black;
+  position: relative;
+  display: flex;
+}
+.dashboard main .results .searchContainer .searchBar input {
+  width: 80%;
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  border: none;
+}
+.dashboard main .results .searchContainer .searchBar input:active {
+  border: none;
+}
+.dashboard main .results .searchContainer .searchBar button {
+  width: 20%;
+  height: 100%;
+}
+.dashboard main .results .listingContainer {
+  height: calc(100% - 80px);
+  overflow-y: scroll;
+}
+.dashboard main .results .listingContainer::-webkit-scrollbar {
+  width: 5px;
+}
+.dashboard main .results .listingContainer::-webkit-scrollbar-track {
+  display: none;
+}
+.dashboard main .results .listingContainer::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.dashboard main .results .listingContainer::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.dashboard main .results .listingContainer .listing {
+  width: 100%;
+  height: 17%;
+  margin: 0.5vh 0;
+  display: flex;
+}
+.dashboard main .results .listingContainer .listing:hover {
+  background-color: #D9D9D9;
+  cursor: pointer;
+}
+.dashboard main .results .listingContainer .listing .indicator {
+  height: 100%;
+  width: 0.5vw;
+  background-color: blue;
+}
+.dashboard main .results .listingContainer .listing .content {
+  height: 100%;
+  width: calc(100% - 1vw);
+}
+.dashboard main .results .listingContainer .true .indicator {
+  background-color: #555;
+}
+.dashboard main .displayContainer {
+  width: 70%;
+  height: calc(100vh - 80px);
+}
+.dashboard main .displayContainer .display {
+  width: 100%;
+  height: calc(100% - 80px);
+  margin: 2vh;
+}
+.dashboard main .displayContainer .display .mainDetailsContainer .imgslider {
+  border-radius: 20px;
+}
+.dashboard main .displayContainer .display .mainDetailsContainer .mainDetails {
+  border-radius: 20px;
+}
+.dashboard main .displayContainer .display .specificDetails {
+  border-radius: 20px;
+}/*# sourceMappingURL=dashboard.css.map */

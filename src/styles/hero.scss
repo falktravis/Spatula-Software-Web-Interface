@@ -1,0 +1,185 @@
+@import 'main'; 
+
+.NavBar{
+    width: 95%;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 2.5%;
+    font-family: Plus Jakarta Sans, Roboto;
+                
+    a{
+        display: block;
+        text-decoration: none;
+        color: black;
+    }
+
+    h1{
+        font-size: calc(42px + 0.390625vw);
+
+        @media (max-width: 700px){
+            font-size: calc(32px + 0.390625vw);
+        }
+        @media (max-width: 500px){
+            font-size: calc(22px + 0.390625vw);
+        }
+        @media (max-width: 400px){
+            font-size: calc(18px + 0.390625vw);
+        }
+    }
+}
+
+.page1{
+    main{
+        .heroContent{
+            animation: heroEnter 200ms ease-in-out;
+        }
+
+        a{
+            animation: heroEnter 200ms ease-in-out;
+        }
+
+        @keyframes heroEnter {
+            0%{
+                display: none;
+                transform: translateY(-60vh) scale(50%);
+            }
+            100%{
+                display: block;
+                transform: translateY(0) scale(100%);
+            }
+        }
+    }
+
+    #blur1{
+        right: 0;
+        bottom: 0;
+        box-shadow: $tertiary3 0px 0px 10vw 10vw, $tertiary2 0px 0px 17.5vw 17.5vw, $tertiary1 0px 0px 25vw 25vw;
+    }
+
+    #blur2{
+        left: 0;
+        top: 0;
+        box-shadow: $tertiary2 0px 0px 7vw 7vw, $tertiary1 0px 0px 15vw 15vw;
+    }
+
+    #blur3{
+        left: 0;
+        bottom: 2vh;
+        box-shadow: $highlight 0px 0px 15vw 7vw;
+    }
+}
+
+.page2{
+    main{
+        .heroContent{
+            animation: heroExit 200ms ease-in-out;
+            transform: translateY(-60vh) scale(50%);
+        }
+
+        a{
+            animation: heroExit 200ms ease-in-out;
+            transform: translateY(-60vh) scale(50%);
+        }
+
+        @keyframes heroExit {
+            0%{
+                transform: translateY(0) scale(100%);
+                display: block;
+            }
+            100%{
+                transform: translateY(-60vh) scale(50%);
+                display: none;
+            }
+        }
+    }
+
+    #blur1{
+        right: 10vw;
+        bottom: 0;
+        box-shadow: $tertiary3 0px 0px 70vw 10vw, $tertiary2 0px 0px 80vw 20vw, $tertiary1 0px 0px 100vw 30vw;
+    }
+}
+
+.heroPage{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+
+    main{
+        height: calc(100% - 80px);
+        width: 100%;
+        position: relative;
+        overflow: visible;
+
+        .heroContent{
+            margin-bottom: 5vh;
+
+            h2{
+                margin-top: 10vh;
+                text-align: center;
+                font-family: sans-serif;
+                font-size: 5vw;
+                
+                span{
+                    color: rgb(26, 26, 234);
+                }
+            }
+        }
+
+        a{
+            display: block;
+            border-radius: 10px;
+            box-shadow: $highlight 0px 0px 50px 7px;
+            text-decoration: none;
+            color: white;
+            background-color: $highlight;
+            width: 10vw;
+            margin: auto;
+            text-align: center;
+            padding: 2vh;
+            font-family: sans-serif;
+            animation: 250ms ease-in-out;
+            font-weight: 700;
+            font-size: calc(16px + 0.390625vw);
+            z-index: -1;
+
+            @media (max-width: 700px){
+                font-size: calc(14px + 0.390625vw);
+            }
+            @media (max-width: 500px){
+                font-size: calc(12px + 0.390625vw);
+            }
+            @media (max-width: 400px){
+                font-size: calc(10px + 0.390625vw);
+            }
+
+            &:hover{
+                transform: translateY(-5px) scale(105%);
+            }
+        }
+    }
+
+    
+    .blur{
+        display: block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        z-index: -1;
+        animation: breathe 10s infinite;
+    }
+
+    @keyframes breathe {
+        0%{
+            transform: scale(90%);
+        }
+        50%{
+            transform: scale(110%);
+        }
+        100%{
+            transform: scale(90%);
+        }
+    }
+}

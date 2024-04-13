@@ -1,0 +1,272 @@
+@import 'main';
+
+.dashboard{
+    background-color: $background;
+
+    .initialLoad{
+        width: 100%;
+        height: calc(100vh - 80px);
+        display: flex;    
+        justify-content: center;
+        align-items: center;
+    }
+
+    main{
+        width: 100%;
+        height: calc(100vh - 80px);
+        position: relative;
+        display: flex;
+        font-family: Plus Jakarta Sans;
+
+        .results{
+            height: 100%;
+            width: 30%;
+
+            .searchContainer{
+                width: 100%;
+                height: 80px;
+                display: flex;
+                align-items: center;
+                position: relative;
+
+                .searchBar{
+                    width: 90%;
+                    height: 35%;
+                    margin: auto;
+                    border-radius: 10px;
+                    border: 1px solid black;
+                    position: relative;
+                    display: flex;
+
+                    input{
+                        width: 80%;
+                        height: 100%;
+                        border-radius: 10px 0 0 10px;
+                        border: none;
+                        outline: none;
+                        padding-left: 10px;
+                        border-right: 1px solid black;
+                    }
+
+                    button{
+                        width: 20%;
+                        height: 100%;
+                        border-radius: 0 10px 10px 0;
+                        border: none;
+                        
+                        &:hover{
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+
+            .listingContainer{
+                height: calc(100% - 80px);
+                width: 100%;
+                overflow-y: scroll;
+
+                &::-webkit-scrollbar {
+                    width: 5px;
+                }
+
+                &::-webkit-scrollbar-track {
+                    display: none;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    background: #888;
+                    border-radius: 10px;
+                }
+
+                &::-webkit-scrollbar-thumb:hover {
+                    background: #555;
+                }
+
+                .listing{
+                    width: 100%;
+                    height: 17%;
+                    margin: 0.5vh 0;
+                    display: flex;
+                    transition: 150ms ease-in-out;
+
+                    &:hover{
+                        background-color: #c9c9c9;
+                        cursor: pointer;
+                    }
+
+                    .indicator{
+                        height: 100%;
+                        width: 0.5vw;
+                        background-color: $tertiary2;
+                    }
+
+                    .content{
+                        height: 100%;
+                        margin-left: 1vw;
+                        width: calc(100% - 1vw);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-around;
+
+                        h3{
+
+                        }
+
+                        .details{
+
+                            .category{
+
+                            }
+                            
+                            .platform{
+
+                            }
+                        }
+                    }
+                }
+
+                .true{
+
+                    .indicator{
+                        background-color: #8e8e8e;
+                    }
+                }
+
+                .current{
+                    background-color: #e2e2e2;
+                }
+
+                .loading{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 20vh;
+                }
+
+                .end{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 10vh;
+                }
+            }
+        }
+
+        .display{
+            width: 70%;
+            height: calc(100vh - 80px - 4vh);
+            margin: 2vh;
+            display: flex;
+            justify-content: space-between;
+            overflow: visible;
+
+            .mainDetailsContainer{
+                width: calc(70% - 1vh);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                overflow: visible;
+
+                .imgSlider{                    
+                    height: calc(75% - 4vh);
+                    padding: 2vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    img{
+                        height: 90%;
+                        width: auto;
+                        border-radius: 20px;
+                    }
+                }
+
+                .mainDetails{
+                    width: calc(100% - 4vh);
+                    height: calc(35% - 4vh);
+                    padding: 2vh;
+                    border-radius: 20px;
+                    background-color: #ffffff;
+                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+                    h2{
+                        font-size: calc(22px + 0.390625vw);
+                        
+                        a{
+                            text-decoration: none;
+                            color: black;
+                            transition: 200ms ease-in-out;
+
+                            &:hover{
+                                cursor: pointer;
+                                color: blue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .specificsAvailable{
+
+            .mainDetailsContainer{
+                width: calc(70% - 1vh);
+            }
+            
+            .specifics{
+                width: calc(30% - 5vh);
+                height: calc(100% - 4vh);
+                padding: 2vh;
+                border-radius: 20px;
+                background-color: #ffffff;
+                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .general{
+                    height: auto;
+                    width: 100%;
+
+                    p{
+                        padding: 1vh 0;
+                    }
+                }
+
+                .contactInfo{
+                    height: auto;
+                    width: 100%;
+
+                    h6{
+                        text-align: center;
+                        font-size: calc(18px + 0.390625vw);
+                        margin: 1vh;
+                    }
+
+                    a{
+                        display: block;
+                        text-decoration: none;
+                        background-color: gray;
+                        width: 90%;
+                        padding: 5%;
+                        text-align: center;
+                        border-radius: 10px;
+                    }
+                }
+            }
+        }
+
+        .noSpecificsAvailable{
+
+            .mainDetailsContainer{
+                width: calc(100% - 1vh);
+            }
+            
+            .specifics{
+                display: none;
+            }
+        }
+    }
+}
