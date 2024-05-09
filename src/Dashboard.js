@@ -1,21 +1,46 @@
-import React, {useState, useEffect, useRef} from 'react';
-import ClipLoader from "react-spinners/ClipLoader";
+import React, {useState, useEffect, useRef, useLayoutEffect, useContext } from 'react';
 import { app } from './realm';
-import './styles/dashboard.scss';
-import './styles/navBar.scss'
+import { UserContext } from './UserContext';
+import NavBar from './NavBar';
 
+//styles
+import './styles/dashboard.scss';
+
+//imgs
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import SearchIcon from '@mui/icons-material/Search';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import BlockIcon from '@mui/icons-material/Block';
+import Tooltip from '@mui/material/Tooltip';
+import Fade from '@mui/material/Fade';
+
+//loading spinner
+import ClipLoader from "react-spinners/ClipLoader";
+
+//react-swipeable
+import { useSwipeable } from 'react-swipeable';
 
 export default function Dashboard() {
+    //mongodb
     let watcherActive = false;//blocks mongodb from creating multiple collection watchers
-    const [initialLoad, setInitialLoad] = useState(true);
+    const [postsCollection, setPostsCollection] = useState(null);//mongodb collection reference
+    const [blacklistCollection, setBlacklistCollection] = useState(null);//mongodb collection reference
+
+    //storage states
     const [listings, setListings] = useState([]);//loaded array of listings
     const [currentPost, setCurrentPost] = useState(null);//post which is being currently viewed
-    const [postsCollection, setPostsCollection] = useState(null);//mongodb collection reference
     const [searchTerm, setSearchTerm] = useState("");//search query for post lookups
+    const listingContainer = useRef(null);//reference to listing container for scroll tracking
+    const scrollPosition = useRef(0);//store scroll state for expanding
+    let userData = useContext(UserContext);
+
+    //boolean states
+    const [initialLoad, setInitialLoad] = useState(true);
     const [isSearching, setIsSearching] = useState(false);//Track if the user is searching for loading more posts properly
     const [isLoading, setIsLoading] = useState(false);//loading state for listings
     const [isEnd, setIsEnd] = useState(false)//true if there are no more posts to load
-    const listingContainer = useRef(null);//reference to listing container for scroll tracking
+    const [expanded, setExpanded] = useState(false)//var of whether the results tab is expanded
 
     //load more posts on scroll to bottom
     const loadMore = async () => {
@@ -28,6 +53,7 @@ export default function Dashboard() {
                         $or: [
                         { Title: { $regex: regex } },
                         { Description: { $regex: regex } },
+                        { Specifics: { $regex: regex } },
                         ],
                         _id: {$lt: listings[listings.length - 1]._id},
                         //!UserId: app?.currentUser?.id
@@ -125,6 +151,22 @@ export default function Dashboard() {
         }
     }
 
+    //Filter the search results by owner
+    const seeMorePostsOwner = () => {
+
+    }
+
+    //block user based on link
+    const block = (ownerLink, ownerName) => {
+        setCurrentPost({data: currentPost?.data, index: currentPost?.index, slideNum: currentPost?.slideNum, isBlocked: true});
+        const id = ownerLink?.match(/profile\/(\d+)\/\?/) && ownerLink?.match(/profile\/(\d+)\/\?/)[1];
+        (async () => {
+            if((await blacklistCollection.findOne({UserId: app?.currentUser?.id, OwnerId: id})) == null){
+                await blacklistCollection.insertOne({UserId: app?.currentUser?.id, OwnerId: id, OwnerName: ownerName});
+            }
+        })();
+    }
+
     //update the currently viewed post
     const changeCurrentPost = (index) => {
         //update the db
@@ -150,20 +192,23 @@ export default function Dashboard() {
         });
 
         //update the content display
-        setCurrentPost({data: listings[index], index: index});
+        setCurrentPost({data: listings[index], index: index, slideNum: 0, isBlocked: false});
     }
 
     // Initialize the page
     useEffect(() => {
+        //login and init mongodb shit
         const login = async () => {
             const mongo = app.currentUser.mongoClient('mongodb-atlas');
-            const posts = mongo.db('Spatula-Software').collection('Posts');
+            const posts = mongo.db('Spatula-Software-Max').collection('Posts');
             setPostsCollection(posts);
+            setBlacklistCollection(mongo.db('Spatula-Software-Max').collection('Blacklist'));
 
             //get 20 current listings
             let initialListings = await posts.aggregate([{$sort: {_id: -1}}, { $limit: 10 }]);
             initialListings[0].isCurrent = true;
             setListings(initialListings)//**{$match: {UserId: app?.currentUser?.id}}, 
+            console.log(userData);
 
             // Ensure that a watcher is not already active
             if (!watcherActive) {
@@ -176,7 +221,24 @@ export default function Dashboard() {
                     },
                 })) {
                     const { fullDocument } = change;
-                    setListings(prevListings => [fullDocument, ...prevListings])
+                    setListings(prevListings => [fullDocument, ...prevListings]);
+
+                    if(userData?.Notifications?.Browser){
+                        console.log('notif');
+                        Notification.requestPermission().then(function(permission) {
+                            if (permission === 'granted') {
+                                console.log('granted');
+                              // Create notification
+                              new Notification('New Listing', {
+                                body: 'New Listing'
+                              });
+                        
+                              // Play sound
+                              var audio = new Audio('./notification.mp3');
+                              audio.play();
+                            }
+                          });
+                    }
                 }
             }
         }
@@ -194,7 +256,6 @@ export default function Dashboard() {
         const handleScroll = () => {
             const container = listingContainer.current;
             if (listings.length > 0 && container.scrollHeight - container.scrollTop - 10 < container.clientHeight && !isLoading && !isEnd) {
-                console.log('Reached the bottom of the container');
                 setIsLoading(true);
                 loadMore();
             }
@@ -210,50 +271,85 @@ export default function Dashboard() {
             }
         };
     }, [listings, isEnd]);
+
+    //Wait for animation and set scroll state on expand
+    useLayoutEffect(() => {
+        if(expanded && listingContainer.current){
+            setTimeout(() => {
+                listingContainer.current.scrollTo(0, scrollPosition.current);
+            }, 200);
+        }
+    }, [expanded])
+
+    //react-swipeable
+    const handlers = useSwipeable({
+        onSwipedLeft: () => {
+            if(expanded){
+                scrollPosition.current = listingContainer.current.scrollTop;
+                setExpanded(false);
+            }
+        },
+        onSwipedRight: () => {
+            if(!expanded){
+                setExpanded(true)
+            }
+        },
+        swipeDuration: 500,
+        trackMouse: true
+    });
     
     return (
         <div className="dashboard">
-            <nav className='NavBar'>
-                <h1><a href='/'>Spatula Software</a></h1>
-                <ul>
-                    <li><a>Dashboard</a></li>
-                    <li><a href="/settings">Settings</a></li>
-                    <li><a href="/support">Support</a></li>
-                </ul>
-            </nav>
-                {(() => {
-                    if(initialLoad){
-                        return(
-                            <div className="initialLoad">
-                                <ClipLoader
-                                    size={100}
-                                    aria-label="Loading Spinner"
-                                    data-testid="loader"
-                                />
-                            </div>
-                        )
-                    }else{
-                        return(
-                            <main>
-                                <div className="results">
+            {(() => {
+                if(initialLoad){
+                    return(
+                        <div className="initialLoad">
+                            <ClipLoader
+                                color='#9d9d9d'
+                                size={100}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </div>
+                    )
+                }else{
+                    return(
+                        <>
+                            <NavBar />
+                            <main {...handlers}>
+                                <button className={`expand expand${expanded.toString()}`} onClick={() => {
+                                    if(expanded){
+                                        scrollPosition.current = listingContainer.current.scrollTop;
+                                    }
+                                    setExpanded(!expanded)
+                                }}>
+                                    <NavigateNextIcon className="expandIcon" />
+                                </button>
+                                <div className={`results resultsexpand${expanded.toString()}`}>
                                     <div className="searchContainer">
+                                        {/**Advanced search - category, platform, owner, price - sort + filter */}
                                         <form className="searchBar" onSubmit={search}>
-                                            <input placeholder='Search...' onChange={(event) => setSearchTerm(event.target.value)} id='search' type="text" />
-                                            <button id="filter">Filter</button>
+                                            <input placeholder='Find a Listing...' onChange={(event) => setSearchTerm(event.target.value)} id='search' type="text" />
+                                            <SearchIcon className="searchIcon" />
+                                            {/*<button onClick={} id="filter">Filter</button>*/}
                                         </form>
                                     </div>
                                     <div className="listingContainer" ref={listingContainer}>
                                         {(() => {
                                             if(listings?.length > 0){
                                                 return listings?.map((listing, index) => {
-                                                    (listing?._id == undefined ? console.log(listing):null)
                                                     return(
-                                                        <div key={listing._id} onClick={() => changeCurrentPost(index)} className={`listing ${listing?.Opened ? "true" : ""} ${listing?.isCurrent ? "current" : ""}`}>
+                                                        <div key={listing._id} onClick={() => {
+                                                            changeCurrentPost(index);
+                                                            expanded ? setExpanded(false):null
+                                                        }} className={`listing ${listing?.Opened ? "true" : ""} ${listing?.isCurrent ? "current" : ""}`}>
                                                             <div className={`indicator`}></div>
                                                             <div className="content">
-                                                                <h3>{listing?.Title} - ${listing?.Price}</h3>
+                                                                <div className="titleContainer">
+                                                                    <h3 className='title'>{listing?.Title}</h3><h3 className='price'>${(listing?.Price)?.toLocaleString()}</h3>
+                                                                </div>
                                                                 <div className="details">
-                                                                    <div className="category">{listing?.Category}</div>
+                                                                    <div className="category">Ford{listing?.Category}</div>
                                                                     <div className="platform">{listing?.Platform}</div>
                                                                 </div>
                                                             </div>
@@ -264,6 +360,7 @@ export default function Dashboard() {
                                                 return(
                                                     <div className="loading">
                                                         <ClipLoader
+                                                            color='#9d9d9d'
                                                             size={50}
                                                             aria-label="Loading Spinner"
                                                             data-testid="loader"
@@ -277,6 +374,7 @@ export default function Dashboard() {
                                                 return(
                                                     <div className="loading">
                                                         <ClipLoader
+                                                            color='#9d9d9d'
                                                             size={50}
                                                             aria-label="Loading Spinner"
                                                             data-testid="loader"
@@ -293,26 +391,72 @@ export default function Dashboard() {
                                         })()}
                                     </div>
                                 </div>
-                                <div className={`display ${currentPost?.data?.Specifics != null ? 'specificsAvailable' : 'noSpecificsAvailable'}`}>
+                                <div className={`display ${currentPost?.data?.Specifics?.length > 0 ? 'specificsAvailable' : 'noSpecificsAvailable'}`}>
                                     <div className="mainDetailsContainer">
                                         <div className="imgSlider">
-                                            <img src={currentPost?.data?.Img} alt="Listing Image" />
+                                            <button onClick={() => currentPost?.slideNum > 0 ? setCurrentPost({data: currentPost?.data, index: currentPost?.index, slideNum: currentPost?.slideNum - 1, isBlocked: currentPost?.isBlocked}): null}>
+                                                <NavigateBeforeIcon className="NavigateBefore" />
+                                            </button>
+                                            <img src={currentPost?.data?.Imgs[currentPost?.slideNum]} alt="Listing Image" />
+                                            <button onClick={() => currentPost?.slideNum < currentPost?.data?.Imgs?.length - 1 ? setCurrentPost({data: currentPost?.data, index: currentPost?.index, slideNum: currentPost?.slideNum + 1, isBlocked: currentPost?.isBlocked}): null}>
+                                                <NavigateNextIcon className="NavigateNext" />
+                                            </button>
+                                            <div className="pagination">
+                                                {(() => {
+                                                    for(let i = 0; i < currentPost?.data?.Imgs?.length; i++){
+                                                        return(
+                                                            <div className={`bubble ${currentPost?.slideNum == index ? 'active' : ''}`} key={i}></div>
+                                                        )
+                                                    }
+                                                })}
+                                            </div>
                                         </div>
                                         <div className="mainDetails">
-                                            <h2><a href={currentPost?.data?.URL} target="_blank">{currentPost?.data?.Title} - ${currentPost?.data?.Price}</a></h2>
-                                            <p>{currentPost?.data?.Description}</p>
+                                            <div className="mainDetailsContent">
+                                                <h2>{currentPost?.data?.Title} - ${(currentPost?.data?.Price)?.toLocaleString()}</h2>
+                                                <p>{currentPost?.data?.Description}</p>
+                                            </div>
+                                            <div className="mainDetailsInteraction">
+                                                <div className="ownerContainer">
+                                                    <div className="ownerDetails">
+                                                        <img src={currentPost?.data?.OwnerImg} alt="Owner Profile Image" />
+                                                        <a href={currentPost?.data?.OwnerLink} target="_blank">{currentPost?.data?.OwnerName}</a>
+                                                    </div>
+                                                    <div className={`blackListButtons blocked${currentPost?.isBlocked.toString()}`}>
+                                                        <Tooltip title="Find Other Listings From This Owner" placement="top" TransitionComponent={Fade}>
+                                                            <button className='searchOwner' onClick={seeMorePostsOwner}>
+                                                                <PersonSearchIcon className="PersonSearchIcon" />
+                                                            </button>
+                                                        </Tooltip>
+                                                        <Tooltip title="Block This Owner" placement="top" TransitionComponent={Fade}>
+                                                            <button className='blockOwner' onClick={() => block(currentPost?.data?.OwnerLink, currentPost?.data?.OwnerName)}>
+                                                                <BlockIcon className="BlockIcon" />
+                                                            </button>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
+                                                <a href={currentPost?.data?.URL} target="_blank">View Listing</a>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="specifics">
+                                    <div className="specificsContainer">
                                         <div className="general">
-                                            {currentPost?.data?.Specifics?.split('\n')?.map((line, index) => (<p key={index}>{line}</p>))}
+                                            <div className="description">
+                                                <h4>Description</h4>
+                                                <p>{currentPost?.data?.Description}</p>
+                                            </div>
+                                            <div className="specifics">
+                                                <h4>Details</h4>
+                                                {currentPost?.data?.Specifics?.length > 0 ? currentPost?.data?.Specifics.map((line, index) => <p key={index}>{line}</p>) : null}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </main>
-                        )
-                    }
-                })()}
+                        </>
+                    )
+                }
+            })()}
         </div>
     )
 }

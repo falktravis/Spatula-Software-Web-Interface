@@ -7,7 +7,15 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-family: Plus Jakarta Sans;
+    font-family: Plus Jakarta Sans, sans-serif;
+
+    .initialLoad{
+        width: 100%;
+        height: 100vh;
+        display: flex;    
+        justify-content: center;
+        align-items: center;
+    }
 
     h1{
         padding-bottom: 3vh;
@@ -46,6 +54,25 @@
             width: 10vw;
             padding: 1vh;
             font-size: calc(14px + 0.390625vw); 
+        }
+
+        @media (max-width: 1024px) {
+            input{
+                width: 40vw;
+            }
+    
+            input[type=submit]{
+                width: 20vw;
+            }
+        }
+        @media (max-width: 600px) {
+            input{
+                width: 60vw;
+            }
+    
+            input[type=submit]{
+                width: 30vw;
+            }
         }
     }
 }

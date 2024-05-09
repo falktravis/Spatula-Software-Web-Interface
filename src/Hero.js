@@ -33,6 +33,10 @@ export default function Hero() {
         }
     }
 
+    const handleQuoteButton = () => {
+
+    }
+
     useEffect(() => {
         if(scrollReady == false){
             console.log(scrollReady);
@@ -43,14 +47,57 @@ export default function Hero() {
     return (
         <div className={"heroPage page" + page} onWheel={e => handleScroll(e)}>
             <nav className="NavBar">
-                <h1><a href='/'>Inventory Auto Solutions</a></h1>
+                <h1><a>Inventory Auto Solutions</a></h1>
                 <a onClick={handleLogin}>Login</a>
             </nav>
             <main>
-                <div className="heroContent">
-                    <h2>Power Up Your Inventory With <br/><span><ReactTyped id="focus" strings={['Artificial Intelligence', 'High-Quality Leads', 'Web Scraping', 'Inventory Auto Solutions']} typeSpeed={45} backSpeed={45} backDelay={2000} loop></ReactTyped></span></h2>
+                <div className="heroContainer">
+                    <div className="heroContent">
+                        <h2>Power Up Your Inventory With <br/><span><ReactTyped id="focus" strings={['Artificial Intelligence', 'High-Quality Leads', 'Web Scraping', 'Inventory Auto Solutions']} typeSpeed={45} backSpeed={45} backDelay={2000} loop></ReactTyped></span></h2>
+                    </div>
+                    <a onClick={handleQuoteButton}>Get a Quote</a>
                 </div>
-                <a href="">Get a Quote</a>
+                <div className="infoDisplay">
+                    <div className="section1">
+
+                    </div>
+                    <div className="section2">
+
+                    </div>
+                    <div className="section3">
+
+                    </div>
+                </div>
+                <form>
+                    <h2>Contact Us</h2>
+                    <p>React out and we will get back to you as soon as possible!</p>
+                    <div className="name">
+                        <label htmlFor="first">First Name:</label>
+                        <input type="text" name="first" id="first" />
+                        <label htmlFor="last">Last Name:</label>
+                        <input type="text" name="last" id="last" />
+                    </div>
+                    <label htmlFor="reason">Reason:</label>
+                    <select name="reason" id="reason">
+                        <option value="quote">Request a Quote</option>
+                        <option value="questions">Ask a Question</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div className="contactInfo">
+                        <label htmlFor="email">Email:</label>
+                        <input type="email" name="email" id="email" />
+                        <label htmlFor="phone">Phone Number:</label>
+                        <input type="tel" name="phone" id="phone" />
+                    </div>
+                    <label htmlFor="preferredContact">Preferred Contact:</label>
+                    <select name="preferredContact" id="preferredContact">
+                        <option value="email">Email</option>
+                        <option value="call">Call</option>
+                        <option value="text">Text</option>
+                    </select>
+                    <label htmlFor="description">Description:</label>
+                    <textarea placeholder="Tell us who you are and why you are reaching out" name="description" id="description" cols="30" rows="10"></textarea>
+                </form>
             </main>
             <div className='blur' id="blur1"></div>
             <div className='blur' id="blur2"></div>

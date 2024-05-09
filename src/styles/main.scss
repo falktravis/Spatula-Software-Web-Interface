@@ -1,12 +1,28 @@
-$highlight: #F026D0;
-$tertiary1: #80eee7;
-$tertiary2: #706ee9;
-$tertiary3: #a86af8;
-$background: #F9F7F7;
+//4 color system, green gradient
+$secondary3: #009252;
+$secondary2: #4BBB8B;
+$secondary1: #ecfcf4;
+$highlight-red: #b91212;
+$highlight-blue: #124fb9;
+$background: #fffefb;
 
 *{
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     transition: 200ms;
+    font-family: Plus Jakarta Sans, Montserrat, Roboto, Helvetica, sans-serif;
+}
+
+.initialLoad{
+    width: 100%;
+    height: 100vh;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+main{
+    background-color: $background;
 }

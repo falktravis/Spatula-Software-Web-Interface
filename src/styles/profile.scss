@@ -1,0 +1,241 @@
+@import 'main';
+
+.Profile{
+
+    main{
+        width: 90%;
+        padding: 0 5%;
+        min-height: calc(100vh - 60px);
+        display: flex;
+
+        .information{
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            img{
+                margin-top: 10vh;
+                border-radius: 50%;
+                height: 15vw;
+                width: 15vw;
+            }
+
+            h5{
+                margin-top: 3vh;
+                width: 100%;
+                text-align: center;
+                font-size: calc(20px + 0.390625vw);
+            }
+
+            p{
+                margin-top: 1vh;
+                width: 100%;
+                text-align: center;
+                font-size: calc(11px + 0.390625vw);
+            }
+
+            button{
+                border-radius: 5px;
+                padding: 1vh;
+                width: 60%;
+                margin: 0 20%;
+                margin-top: 3vh;
+                background-color: #ffffff;
+                border: 2px solid $highlight-blue;
+                color: $highlight-blue;
+                font-weight: 600;
+                font-size: calc(11px + 0.390625vw);
+
+                &:hover{
+                    cursor: pointer;
+                    color: #ffffff;
+                    background-color: $highlight-blue;
+                }
+            }
+        }
+
+        .specifics{
+            width: 70%;
+
+            .graphContainer{
+                width: 100%;
+                padding-top: 5vh;
+
+                .graphInfo{
+                    width: 80%;
+                    margin: 0 10%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    overflow: visible;
+    
+                    .totalPosts{
+                        margin-left: 5%;
+
+                        #label{
+                            font-size: calc(12px + 0.390625vw);
+                            color: rgb(181, 181, 181);
+                        }
+
+                        #total{
+                            font-size: calc(24px + 0.390625vw);
+                            padding: 0.5vh 0;
+                            font-weight: 600;
+                            text-align: center;
+                        }
+                    }
+    
+                    .buttons{
+                        display: flex;
+                        overflow: visible;
+                        padding: 1vh 0;
+    
+                        & * {
+                            overflow: visible;
+                          }
+                        
+                        .MuiBox-root{
+                            margin-right: 2vw;
+                        }
+                    }
+                }
+    
+                .graph{
+                    display: flex;
+                    justify-content: center;
+
+                    & > div{
+                        width: 100% !important;
+                        height: 50vh !important;
+                    }
+                }
+            }
+
+            .searchInfo{
+                margin: 4vh 0;
+
+                h3{
+                    font-size: calc(20px + 0.390625vw);
+                    padding: 1vh 0;
+                    padding-left: calc(5% + 2vh);
+                }
+
+                .categoryContainer{
+                    width: 100%;
+
+                    .category{
+                        width: 90%;
+                        margin: 1vh 5%;
+                        position: relative;
+                        border: 2px solid rgb(181, 181, 181);;
+                        border-radius: 5px;
+                        transition: 200ms;
+
+                        .categoryDisplay{
+                            width: calc(100% - 4vh);
+                            padding: 2vh;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            overflow: visible;
+
+                            p{
+                                font-weight: 600;
+                                font-size: calc(12px + 0.390625vw);
+                            }
+
+                            .icon{
+                                transition: 200ms;
+                                overflow: visible;
+                            }
+                        }
+
+                        .categoryDetails{
+                            width: calc(100% - 4vh);
+                            height: 0;
+                            padding: 0 2vh;
+                            transition: 200ms;
+
+                            p{
+                                font-size: calc(10px + 0.390625vw);
+                                padding-top: 4px;
+                            }
+                        }
+                    }
+
+                    .active{
+
+                        .categoryDisplay{
+
+                            .icon{
+                                transform: rotate(180deg);
+                            }
+                        }
+
+                        .categoryDetails{
+                            padding-bottom: 2vh;
+                            height: auto;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 1024px) {
+        main{
+            flex-direction: column;
+
+            .information{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+    
+                img{
+                    margin-top: 5vh;
+                    height: 20vw;
+                    width: 20vw;
+
+                    @media (max-width: 600px) {
+                        height: 30vw;
+                        width: 30vw;
+                    }
+                }
+            }
+
+            .specifics{
+                width: 100%;
+    
+                .graphContainer{
+    
+                    .graphInfo{
+        
+                        .buttons{
+
+                            & > div{
+
+                                button{
+                                    padding: 1vh;
+                                    font-size: calc(10px + 0.390625vw);
+                                }
+
+                                #date-select{
+                                    padding: 1vh;
+                                }
+                            }
+                        }
+                    }
+        
+                    .graph{
+                        & > div{
+                            width: 100% !important;
+                            height: 35vh !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
